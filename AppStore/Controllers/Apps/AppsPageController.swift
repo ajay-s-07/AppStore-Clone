@@ -19,10 +19,59 @@ class AppsPageController: BaseListController, UICollectionViewDelegateFlowLayout
         collectionView.register(AppsGroupCell.self, forCellWithReuseIdentifier: cellId)
         
         collectionView.register(AppsPageHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
+        
+        fetchData()
     }
     
+    var socialApps = [SocialApp]()
+    var editorChoice: AppGroup?
+    var groups = [AppGroup]()
+    
+    fileprivate func fetchData() {
+        Service.shared.fetchGames { (appGroup, err) in
+            if let err = err{
+                print("Failed to fetch games: ", err)
+                return
+            }
+            
+            self.editorChoice = appGroup
+            if let group = appGroup {
+                self.groups.append(group)
+            }
+            
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
+        
+        Service.shared.fetchGames2 { (appGroup, err) in
+            if let err = err{
+                print("Failed to fetch games: ", err)
+                return
+            }
+            
+            self.editorChoice = appGroup
+            if let group = appGroup {
+                self.groups.append(group)
+            }
+            
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
+        
+        Service.shared.fetchSocialApps { (apps, err) in
+
+            self.socialApps = apps ?? []
+            self.collectionView.reloadData()
+        }
+    }
+    
+    
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath)
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! AppsPageHeader
+        header.appHeaderHorizontalController.socialApps = self.socialApps
+        header.appHeaderHorizontalController.collectionView.reloadData()
         return header
     }
     
@@ -31,11 +80,15 @@ class AppsPageController: BaseListController, UICollectionViewDelegateFlowLayout
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return groups.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath )
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AppsGroupCell
+        cell.titleLabel.text = groups[indexPath.item].feed.title
+        cell.horizontalController.appGroup = groups[indexPath.item]
+        cell.horizontalController.collectionView.reloadData()
+        
         return cell
     }
     

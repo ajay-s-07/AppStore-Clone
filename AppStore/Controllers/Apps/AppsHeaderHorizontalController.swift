@@ -11,6 +11,9 @@ class AppsHeaderHorizontalController: BaseListController, UICollectionViewDelega
     
     let cellId = "cellId"
     
+    var socialApps = [SocialApp]()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
@@ -30,11 +33,33 @@ class AppsHeaderHorizontalController: BaseListController, UICollectionViewDelega
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return socialApps.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AppsHeaderCell
+        let app = self.socialApps[indexPath.item]
+        cell.companyLabel.text = app.name
+        cell.titleLabel.text = app.tagline
+        loadImage(in: cell.imageView, from: app.imageUrl)
         return cell
+    }
+    
+    func loadImage(in view: UIImageView, from urlString: String) {
+        if let url = URL(string: urlString) {
+            URLSession.shared.dataTask(with: url) { (data, resp, err) in
+                
+                guard let data = data else {
+                    return
+                }
+                
+                let image = UIImage(data: data)
+                
+                DispatchQueue.main.async {
+                    view.image = image
+                }
+                
+            }.resume()
+        }
     }
 }
