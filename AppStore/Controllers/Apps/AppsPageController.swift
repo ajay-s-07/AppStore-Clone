@@ -12,6 +12,20 @@ class AppsPageController: BaseListController, UICollectionViewDelegateFlowLayout
     let cellId = "id"
     let headerId = "headerId"
     
+    let activityIndicatorView: UIActivityIndicatorView = {
+        let aiv = UIActivityIndicatorView(style: .whiteLarge)
+        aiv.color = .black
+        aiv.startAnimating()
+        aiv.hidesWhenStopped = true
+        return aiv
+    }()
+    // New screen comes when clicked on app group titles
+//    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        let redController = UIViewController()
+//        redController.view.backgroundColor = .red
+//        navigationController?.pushViewController(redController, animated: true)
+//    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
@@ -63,7 +77,9 @@ class AppsPageController: BaseListController, UICollectionViewDelegateFlowLayout
         Service.shared.fetchSocialApps { (apps, err) in
 
             self.socialApps = apps ?? []
-            self.collectionView.reloadData()
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
         }
     }
     
@@ -88,6 +104,12 @@ class AppsPageController: BaseListController, UICollectionViewDelegateFlowLayout
         cell.titleLabel.text = groups[indexPath.item].feed.title
         cell.horizontalController.appGroup = groups[indexPath.item]
         cell.horizontalController.collectionView.reloadData()
+        // new screen when clicked on apps
+        cell.horizontalController.didSelectHandler = { [weak self] feedResult in
+            let controller = AppDetailController(appId: feedResult.id)
+            controller.navigationItem.title = feedResult.name
+            self?.navigationController?.pushViewController(controller, animated: true)
+        }
         
         return cell
     }
