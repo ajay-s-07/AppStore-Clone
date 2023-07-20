@@ -30,8 +30,6 @@ class TodayMultipleAppCell: BaseTodayCell {
         backgroundColor = .white
         layer.cornerRadius = 16
         
-        multipleAppsController.view.backgroundColor = .blue
-        
         let stackView = VerticalStackView(arrangedSubviews: [
             categoryLabel,
             titleLabel,
