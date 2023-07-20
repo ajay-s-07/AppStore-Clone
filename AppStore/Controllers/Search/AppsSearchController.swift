@@ -109,14 +109,14 @@ class AppsSearchController: BaseListController, UICollectionViewDelegateFlowLayo
         
         loadImage(in: cell.imageView, from: appResult.artworkUrl100)
         
-        if appResult.screenshotUrls.count > 0 {
-            loadImage(in: cell.screenshot1ImageView, from: appResult.screenshotUrls[0])
+        if appResult.screenshotUrls!.count > 0 {
+            loadImage(in: cell.screenshot1ImageView, from: appResult.screenshotUrls![0])
         }
-        if appResult.screenshotUrls.count > 1 {
-            loadImage(in: cell.screenshot2ImageView, from: appResult.screenshotUrls[1])
+        if appResult.screenshotUrls!.count > 1 {
+            loadImage(in: cell.screenshot2ImageView, from: appResult.screenshotUrls![1])
         }
-        if appResult.screenshotUrls.count > 2 {
-            loadImage(in: cell.screenshot3ImageView, from: appResult.screenshotUrls[2])
+        if appResult.screenshotUrls!.count > 2 {
+            loadImage(in: cell.screenshot3ImageView, from: appResult.screenshotUrls![2])
         }
         
 

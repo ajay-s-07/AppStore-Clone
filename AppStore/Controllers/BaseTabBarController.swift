@@ -42,12 +42,11 @@ class BaseTabBarController: UITabBarController {
         
         
         viewControllers = [
+            createNavController(viewController: MusicController(), title: "MUSIC", imageName: "music"),
             createNavController(viewController: TodayController(), title: "TODAY", imageName: "today_icon"),
             createNavController(viewController: AppsPageController(), title: "Apps", imageName: "apps"),
             createNavController(viewController: AppsSearchController(), title: "Search", imageName: "search"),
-            
         ]
-        
         
         tabBar.isTranslucent = false // up-down spaces
     }
