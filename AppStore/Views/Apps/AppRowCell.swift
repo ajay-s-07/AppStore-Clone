@@ -10,6 +10,33 @@ import UIKit
 
 class AppRowCell: UICollectionViewCell {
     
+    var app: FeedResult! {
+        didSet {
+            companyLabel.text = app.name
+            nameLabel.text = app.name
+            loadImage(in: imageView, from: app.artworkUrl100)
+        }
+    }
+    
+    func loadImage(in view: UIImageView, from urlString: String) {
+        if let url = URL(string: urlString) {
+            URLSession.shared.dataTask(with: url) { (data, resp, err) in
+                
+                guard let data = data else {
+                    return
+                }
+                
+                let image = UIImage(data: data)
+                
+                DispatchQueue.main.async {
+                    view.image = image
+                }
+                
+            }.resume()
+        }
+    }
+
+    
     let imageView = UIImageView(cornerRadius: 8)
     
     let nameLabel = UILabel(text: "App Name", font: .systemFont(ofSize: 16))

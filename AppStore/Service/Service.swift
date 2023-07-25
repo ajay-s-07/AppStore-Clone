@@ -66,7 +66,7 @@ class Service {
                 completion(objects, nil)
             } catch {
                 completion(nil, error)
-                print("Failed to decode: " , err)
+                print("Failed to decode: " , error.localizedDescription)
             }
             
         }.resume()
